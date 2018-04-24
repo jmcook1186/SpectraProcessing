@@ -16,10 +16,10 @@ Created on Wed Aug 16 10:59:17 2017
 
 # navigate to folder using cd
 
-# >>    rename 's/\.asd$/.txt' *
+# cd /path/folder/
+# rename “s/.asd.txt/.txt/g”**-v
 
 # then the files are all saved as .txt and can be read into this script
-
 
 import pandas as pd
 import numpy as np
@@ -27,15 +27,13 @@ import matplotlib.pyplot as plt
 import os
 import numbers
 
-path = "/media/joe/FDB2-2F9B/end_season_spectra/"
+path = "/media/joe/FDB2-2F9B/2016_Spectra/"
 
 filelist = os.listdir(path) # pull all files out of the target directory
-
-# create list of values in each txt file. skip 41 rows to discard header info, define comma delimiter, 
-DF = pd.DataFrame()
+DF = pd.DataFrame() # create empty dataframe
 
 for file in filelist:   
-    DF[file] = pd.read_csv(path+file)
+    DF[file] = pd.read_csv(path+file) # for all files in folder, add to DF column
 
 # rename each column with the filename minus the extension
 filenames = []
@@ -48,7 +46,7 @@ for file in filelist:
 filenames = np.transpose(filenames)    
 DF.columns = [filenames]
 
-# Average spectra from each site
+# Average spectra from each site, grouped by equal filenames
 DF2 = DF.transpose()
 DF2 = DF2.groupby(by=DF2.index, axis=0).apply(lambda g: g.mean() if isinstance(g.iloc[0,0],numbers.Number) else g.iloc[0])
 DF = DF2.transpose()
@@ -56,29 +54,28 @@ DF = DF2.transpose()
 # drop broken spectra
 DF = DF.drop(['11_8_16_disc_cryoconite2'],axis=1)
 DF = DF.drop(['10_8_16_bumps_2s'],axis=1)
-DF['Wavelength'] = np.arange(350,2500,1)
+DF = DF.drop(['19_7_2016_med_alg01'],axis=1)
 
-DF.plot(figsize=(15,15)),plt.ylim(0,1)
-# correct for 1000nm step 
-
+# correct for 1000nm step and instabilities due to water vapour
 for i in DF.columns:
-    X = np.array(DF['Wavelength'][640:650])
-    Y = np.array(DF[i][640:650])
-    # calculate linear regression coefficients
-    corr = DF[i][650] - DF[i][649]
-    DF[i][650:-1] = DF[i][650:-1]-corr
+
+    # calculate correction factor (raises NIR to meet VIS - see Painter 2011)
+    corr = DF.loc[650,i] - DF.loc[649,i]
+    DF.loc[650:2149,i] = DF.loc[650:2149,i]-corr  
     
     # interpolate over instabilities at ~1800 nm
-    DF[i][1480:1600] = np.nan 
+    DF.loc[1400:1650,i] = np.nan 
     DF[i] = DF[i].interpolate()
-    DF[i][1400:1600] = pd.rolling_mean(DF[i][1400:1600],window=30)
+    DF.loc[1400:1600,i] = DF.loc[1400:1600,i].rolling(window=50,center=False).mean()
     DF[i] = DF[i].interpolate()
 
     #interpolate over instabilities at 2500 nm
-    DF[i][2050:2150] = np.nan 
+    DF.loc[2050:2150,i] = np.nan 
     DF[i] = DF[i].interpolate()
-    DF[i][2050:2150] = pd.rolling_mean(DF[i][2050:2150],window=30)
+    DF.loc[2050:2150,i] = DF.loc[2050:2150,i].rolling(window=50,center=False).mean()
     DF[i] = DF[i].interpolate()
 
-DF.plot(x=['Wavelength'],figsize=(15,15)),plt.ylim(0,1.2)
-DF.to_csv('/media/joe/FDB2-2F9B/2016_end_season_HCRF.csv')
+# add wavelength column and plot with wavelength on x-axis
+DF['Wavelength'] = np.arange(350,2500,1)
+DF.plot(x=['Wavelength'],figsize=(15,15),legend=False),plt.ylim(0,1.2)
+DF.to_csv('/media/joe/FDB2-2F9B/MASTER_HCRF_2016.csv') # save as csv
