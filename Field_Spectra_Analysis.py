@@ -14,7 +14,7 @@ import scipy as sci
 import scipy.stats as stats
 import statsmodels as sm
 import math
-
+plt.style.use('seaborn')
 
 ################ IMPORT CSVs FOR ALBEDO AND HCRF DATA #########################
 ########## DEFINE SITES TO INCLUDE IN EACH IMPURITY LOADING CLASS #############
@@ -130,6 +130,7 @@ def create_plot_alb_hcrf(process_spectra = True, plots = 2, savefiles = False):
     if plots == 1:   
      
         plt.figure(1)
+        plt.grid(None)
         plt.xlim(350,2000)
         plt.ylim(0,1)
         plt.plot(WL,HA_alb,color='g',label = 'Heavy Algae')
@@ -140,6 +141,7 @@ def create_plot_alb_hcrf(process_spectra = True, plots = 2, savefiles = False):
         plt.ylabel('Albedo')
         
         plt.figure(2)
+        plt.grid(None)
         plt.xlim(350,2000)
         plt.ylim(0,1)
         plt.plot(WL,HA_hcrf,color='g',label = 'Heavy Algae')
@@ -192,31 +194,35 @@ def create_plot_alb_hcrf(process_spectra = True, plots = 2, savefiles = False):
         SN_hcrf_avminus = SN_hcrf_av - SN_hcrf_std
         
         
-        fig = plt.figure(figsize=(12,6))
+        fig = plt.figure(figsize=(24,12))
         ax1 = plt.subplot(1,2,1)
         ax2 = plt.subplot(1,2,2)
         ax1.set_ylim(0,1),ax1.set_xlim(350,2200)
-        ax2.set_ylim(0,1),ax1.set_xlim(350,2200)
+        ax2.set_ylim(0,1),ax2.set_xlim(350,2200)
+
+        ax1.tick_params(axis='both', which='major', labelsize=22)
+        ax2.tick_params(axis='both', which='major', labelsize=22)
+
+        plt.text(-1600,0.95,'line = mean, ',fontsize='22')
+        plt.text(-1250,0.95, 'shade = 1 $\sigma$',fontsize='22')
         
-        ax1.plot(WL,HA,color='g')
+        ax1.plot(WL,HA,color='g',label='H$_{bio}$')
         ax1.fill_between(WL,HAavplus,HAavminus,facecolor='green',alpha=0.1)
-        plt.text(-650,0.9,'line = mean',fontsize='12')
-        plt.text(-650,0.8, 'shade = 1 SD',fontsize='12')
         
-        ax1.plot(WL,LA,color='r')
+        ax1.plot(WL,LA,color='r',label='L$_{bio}$')
         ax1.fill_between(WL,LAavplus,LAavminus,facecolor='red',alpha=0.1)
         
-        ax1.plot(WL,CI,color='b')
+        ax1.plot(WL,CI,color='b',label='CI')
         ax1.fill_between(WL,CIavplus,CIavminus,facecolor='blue',alpha=0.1)
         
-        ax1.plot(WL,SN,color='k')
+        ax1.plot(WL,SN,color='k',label='SN')
         ax1.fill_between(WL,SNavplus,SNavminus,facecolor='black',alpha=0.1)
+        ax1.legend(loc='upper right',fontsize=22)
         
-        
-        ax2.plot(WL,HA_hcrf_av,color='g',label='Heavy Algae')
+        ax2.plot(WL,HA_hcrf_av,color='g',label='H$_{bio}$')
         ax2.fill_between(WL,HA_hcrf_avplus,HA_hcrf_avminus,facecolor='green',alpha=0.2)
         
-        ax2.plot(WL,LA_hcrf_av,color='r',label='Light Algae')
+        ax2.plot(WL,LA_hcrf_av,color='r',label='L$_{bio}$')
         ax2.fill_between(WL,LA_hcrf_avplus,LA_hcrf_avminus,facecolor='red',alpha=0.2)
         
         ax2.plot(WL,CI_hcrf_av,color='b',label='Clean Ice')
@@ -226,11 +232,11 @@ def create_plot_alb_hcrf(process_spectra = True, plots = 2, savefiles = False):
         ax2.fill_between(WL,SN_hcrf_avplus,SN_hcrf_avminus,facecolor='black',alpha=0.2)
         
         
-        ax1.set_ylim(0,1), ax1.set_xlim(350,2000),ax1.set_xlabel('Wavelength (nm)',fontsize='12'),ax1.set_ylabel('Albedo',fontsize='12')
-        ax2.set_ylim(0,1), ax2.set_xlim(350,2000),ax2.set_xlabel('Wavelength (nm)',fontsize='12'),ax2.set_ylabel('HCRF',fontsize='12')
-        ax2.legend(loc='upper right')
-    
-    
+        ax1.set_ylim(0,1), ax1.set_xlim(350,2000),ax1.set_xlabel('Wavelength (nm)',fontsize='22'),ax1.set_ylabel('Albedo',fontsize='22')
+        ax2.set_ylim(0,1), ax2.set_xlim(350,2000),ax2.set_xlabel('Wavelength (nm)',fontsize='22'),ax2.set_ylabel('HCRF',fontsize='22')
+        ax2.legend(loc='upper right',fontsize='22')
+        ax1.grid(None),ax2.grid(None)
+        plt.savefig('/home/joe/Desktop/Albedo_HCRF.jpg',dpi=150)
     
     if savefiles:
         HA_alb.to_csv('Hbio_albedo.csv')
@@ -241,7 +247,7 @@ def create_plot_alb_hcrf(process_spectra = True, plots = 2, savefiles = False):
         LA_hcrf.to_csv('Lbio_hcrf.csv')
         CI_hcrf.to_csv('CI_hcrf.csv')
         SN_hcrf.to_csv('SN_hcrf.csv')                
-    
+        
         
     return HA_alb, HA_hcrf, LA_alb, LA_hcrf, CI_alb, CI_hcrf, SN_alb, SN_hcrf
 
@@ -277,42 +283,52 @@ def albedo_hcrf_ANOVA(HA_alb,HA_hcrf,LA_alb,LA_hcrf,CI_alb,CI_hcrf,SN_alb,SN_hcr
     
     if plots:
         
-        fig = plt.figure(figsize=(8, 6))
+        fig = plt.figure(figsize=(16, 8))
+        
         plt.title('ANOVA results for Albedo')
         sub1 = plt.subplot(1, 2, 1)
         sub1.set_xlim(350,1800)
-        sub1.set_ylabel('one-way ANOVA p-value')
+        sub1.set_ylabel('one-way ANOVA p-value',fontsize=22)
         
         sub2 = plt.subplot(1, 2, 2)
         sub2.set_xlim(350,1800)
-        sub2.set_ylabel('one-way ANOVA F-statistic')
+        sub2.set_ylabel('one-way ANOVA F-statistic',fontsize=22)
+        sub1.set_xlabel('Wavelength (nm)',fontsize=22)
         sub2.yaxis.tick_right()
         sub2.yaxis.set_label_position("right")
+        sub2.set_xlabel('Wavelength (nm)',fontsize=22)
         
         sub1.plot(WL[0:1450],alb_p_list[0:1450],label='p-value')
         sub1.hlines(0.05,350,1800,color='k',linestyle='dashed')
-        sub1.text(1600, -0.006, 'Wavelength (nm)', fontsize=11)
         
         sub2.plot(WL,alb_stat_list,label='F-statistic')
+        sub1.tick_params(axis='both', which='major', labelsize=22)
+        sub2.tick_params(axis='both', which='major', labelsize=22)
+        
+        plt.savefig('/home/joe/Desktop/ANOVA_albedo.jpg',dpi=150)
         
         # HCRF
         fig2 = plt.figure(figsize=(8, 6))
         plt.title('ANOVA results for HCRF')
         sub1 = plt.subplot(1, 2, 1)
         sub1.set_xlim(350,1800)
-        sub1.set_ylabel('one-way ANOVA p-value')
+        sub1.set_ylabel('one-way ANOVA p-value',fontsize=22)
+        sub1.set_xlabel('Wavelength (nm)',fontsize=22)
         
         sub2 = plt.subplot(1, 2, 2)
         sub2.set_xlim(350,1800)
-        sub2.set_ylabel('one-way ANOVA F-statistic')
+        sub2.set_ylabel('one-way ANOVA F-statistic',fontsize=22)
         sub2.yaxis.tick_right()
         sub2.yaxis.set_label_position("right")
-        
+        sub1.set_xlabel('Wavelength (nm)')
         sub1.plot(WL[0:1450],hcrf_p_list[0:1450],label='p-value')
         sub1.hlines(0.05,350,1800,color='k',linestyle='dashed')
         sub1.text(1600, -0.006, 'Wavelength (nm)', fontsize=11)
         
         sub2.plot(WL,hcrf_stat_list,label='F-statistic')
+        sub1.grid(None),sub2.grid(None)
+        sub1.tick_params(axis='both', which='major', labelsize=22)
+        sub2.tick_params(axis='both', which='major', labelsize=22)
         
     if savefiles:
         
@@ -505,6 +521,7 @@ def alb_hcrf_posthoc_tests(HA_alb,HA_hcrf,LA_alb,LA_hcrf,CI_alb,CI_hcrf,SN_alb,S
     
     if plots:
         # plot p value and t value per unit wavelemngth for albedo and hcrf
+        
         fig = plt.figure(figsize=(10,8))
         sub1 = plt.subplot(2,2,1)
         sub1.plot(WL,alb_test1_list_p,color='g',label='HA vs LA')
@@ -729,22 +746,24 @@ def derivative_analysis(HA_alb,HA_hcrf,LA_alb,LA_hcrf,CI_alb,CI_hcrf,SN_alb,SN_h
     
 
     if plots:
-        fig = plt.figure(figsize=(12, 8))
-        plt.title('1st Derivative (Left) and Second Derivative (Right): Albedo')
+        fig = plt.figure(figsize=(18, 12))
         sub1 = plt.subplot(4, 1, 1)
         sub1.set_xlim(350,700)
         sub1.set_ylim(-0.001,0.001)
-        sub1.set_ylabel('1st Derivative Albedo')
-        sub1.plot(WL,dv1_alb_HA_av,color='g')
-        sub1.plot(WL,dv1_alb_LA_av,color='r')
-        sub1.plot(WL,dv1_alb_CI_av,color='b',alpha=0.2)
-        sub1.plot(WL,dv1_alb_Snow_av,color='k',alpha=0.5)
+        sub1.set_ylabel('1st Derivative'+'\n'+ 'Albedo',fontsize=22)
+        sub1.plot(WL,dv1_alb_HA_av,color='g',label='H$_{bio}$')
+        sub1.plot(WL,dv1_alb_LA_av,color='r',label='L$_{bio}$')
+        sub1.plot(WL,dv1_alb_CI_av,color='b',alpha=0.2,label='CI')
+        sub1.plot(WL,dv1_alb_Snow_av,color='k',alpha=0.5,label='SN')
         sub1.axvspan(680,690,color='g',alpha=0.1)
         sub1.locator_params(nbins=4, axis='y')
+        sub1.legend(ncol=4,loc='best',fontsize=22)
+        sub1.grid(None)
         
         sub2 = plt.subplot(4, 1, 2)
         sub2.set_xlim(350,700)
-        sub2.set_ylabel('2nd Derivative Albedo')
+        sub2.set_ylabel('2nd Derivative'+'\n'+'Albedo',fontsize=22)
+        sub2.set_xlabel('Wavelength (nm)',fontsize=22)
         sub2.set_ylim(-0.0002,0.0002)
         sub2.yaxis.tick_left()
         sub2.yaxis.set_label_position("left")
@@ -754,6 +773,13 @@ def derivative_analysis(HA_alb,HA_hcrf,LA_alb,LA_hcrf,CI_alb,CI_hcrf,SN_alb,SN_h
         sub2.plot(WL,dv2_alb_Snow_av,color='k',alpha=0.5)
         sub2.axvspan(680,690,color='g',alpha=0.1)
         sub2.locator_params(nbins=4, axis='y')
+        sub2.grid(None)
+    
+    
+        sub1.tick_params(axis='x', which='major', labelsize=0)
+        sub1.tick_params(axis='y', which='major', labelsize=22)
+        sub2.tick_params(axis='both', which='major', labelsize=22)
+        plt.savefig('/home/joe/Desktop/derivative.jpg',dpi=150)
         
         sub3 = plt.subplot(4, 1, 3)
         sub3.set_xlim(350,700)
@@ -1006,6 +1032,7 @@ def absorption_feature_1030(HA_alb,HA_hcrf,LA_alb,LA_hcrf,CI_alb,CI_hcrf,SN_alb,
         sub2.set_xlim(950,1085)
         sub2.set_xlabel('Wavelength (nm)')
         sub2.set_ylabel('Depth of absorption feature')
+        
         
         sub3=plt.subplot(2,2,3)
         sub3.plot(WL,HA_hcrf,label = 'Heavy Algae')
