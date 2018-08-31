@@ -28,7 +28,7 @@ HAsites = ['13_7_SB2','13_7_SB4',
 '14_7_S5','14_7_SB1','14_7_SB5','14_7_SB10',
 '15_7_SB3',
 '21_7_S3',
-'21_7_SB1','21_7_SB7',
+'21_7_SB1','21_7_SB7','21_7_SB8',
 '22_7_SB4','22_7_SB5','22_7_S3','22_7_S5',
 '23_7_SB3','23_7_SB4','23_7_SB5','23_7_S3','23_7_S5',
 '24_7_SB2','24_7_S1',
@@ -37,9 +37,9 @@ HAsites = ['13_7_SB2','13_7_SB4',
 
 LAsites = ['13_7_S2','13_7_S5','13_7_SB1',
 '14_7_S2','14_7_S3','14_7_SB2','14_7_SB3','14_7_SB7','14_7_SB9',
-'15_7_S2','15_7_S3','15_7_SB4',
-'20_7_SB1','20_7_SB3',
-'21_7_S1','21_7_S5','21_7_SB2','21_7_SB4',
+'15_7_S2','15_7_S3','15_7_SB4','15_7_SB1','15_7_SB2',
+'20_7_SB1','20_7_SB3','20_7_SB2',
+'21_7_S1','21_7_S5','21_7_SB2','21_7_SB4','21_7_SB5',
 '22_7_SB1','22_7_SB2','22_7_SB3','22_7_S1',
 '23_7_S1','23_7_S2',
 '24_7_SB2','24_7_S2',
@@ -52,9 +52,8 @@ SNsites = ['13_7_S4',
 
 CIsites =['13_7_S1','13_7_S3','13_7_SB3','13_7_SB5',
 '14_7_S1',
-'15_7_S1','15_7_S4','15_7_SB1','15_7_SB2','15_7_SB5',
-'20_7_SB2',
-'21_7_S2','21_7_S4','21_7_SB3','21_7_SB5','21_7_SB8',
+'15_7_S1','15_7_S4','15_7_SB5',
+'21_7_S2','21_7_S4','21_7_SB3',
 '22_7_S2','22_7_S4',
 '23_7_SB1','23_7_SB2',
 '23_7_S4',
@@ -590,6 +589,8 @@ def alb_hcrf_posthoc_tests(HA_alb,HA_hcrf,LA_alb,LA_hcrf,CI_alb,CI_hcrf,SN_alb,S
         sub4.set_xlabel('Wavelength')
         sub4.set_ylabel('t-value')
     
+
+        
     return
 
 
@@ -1006,7 +1007,7 @@ def absorption_feature_1030(HA_alb,HA_hcrf,LA_alb,LA_hcrf,CI_alb,CI_hcrf,SN_alb,
     
     if plots:
     
-        fig = plt.figure(figsize=(10,8))
+        fig = plt.figure(figsize=(20,16)),
         sub1=plt.subplot(2,2,1)
         sub1.plot(WL,HA,label = 'Heavy Algae')
         sub1.plot(WL,LA, label = 'Light algae')
@@ -1021,6 +1022,7 @@ def absorption_feature_1030(HA_alb,HA_hcrf,LA_alb,LA_hcrf,CI_alb,CI_hcrf,SN_alb,
         sub1.plot(WL[600:735],RcCI,color='r',alpha=0.5,linestyle='dashed')
         sub1.plot(WL[600:735],RcSN,color='c',alpha=0.5,linestyle='dashed')
         sub1.set_ylabel('Albedo')
+        plt.grid(None)
         plt.legend(loc='upper right')
         
         sub2 = plt.subplot(2,2,2)
@@ -1032,7 +1034,7 @@ def absorption_feature_1030(HA_alb,HA_hcrf,LA_alb,LA_hcrf,CI_alb,CI_hcrf,SN_alb,
         sub2.set_xlim(950,1085)
         sub2.set_xlabel('Wavelength (nm)')
         sub2.set_ylabel('Depth of absorption feature')
-        
+        plt.grid(None)        
         
         sub3=plt.subplot(2,2,3)
         sub3.plot(WL,HA_hcrf,label = 'Heavy Algae')
@@ -1048,6 +1050,7 @@ def absorption_feature_1030(HA_alb,HA_hcrf,LA_alb,LA_hcrf,CI_alb,CI_hcrf,SN_alb,
         sub3.plot(WL[600:735],RcCI_hcrf,color='r',alpha=0.5,linestyle='dashed')
         sub3.plot(WL[600:735],RcSN_hcrf,color='c',alpha=0.5,linestyle='dashed')
         sub3.set_ylabel('HCRF')
+        plt.grid(None)
         
         sub4 = plt.subplot(2,2,4)
         sub4.plot(WL[600:735],feature_depths_HA_hcrf,label='Heavy Algae')
@@ -1058,7 +1061,9 @@ def absorption_feature_1030(HA_alb,HA_hcrf,LA_alb,LA_hcrf,CI_alb,CI_hcrf,SN_alb,
         sub4.set_xlim(950,1085)
         sub4.set_xlabel('Wavelength (nm)')
         sub4.set_ylabel('Depth of absorption feature')
+        plt.grid(None)
 
+        
     return 
 
 

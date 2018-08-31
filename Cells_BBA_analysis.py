@@ -41,8 +41,8 @@ def plots(xs,ys,line,R,Rp):
     fig = plt.figure(figsize=(10,10))
     plt.scatter(xs,ys,color='b'),plt.plot(xs,line,color='r'),plt.xlabel('Log cells mL$^{-1}$',fontsize=22),
     plt.ylabel('Broadband Albedo (0.35 - 2.5 $\mu$m)',fontsize=22),plt.xticks(fontsize=22),plt.yticks(fontsize=22),
-    plt.legend(loc='best'),plt.grid(None),plt.text(4.1,0.72,'$r^2$ = {}'.format(np.round(r_squared,2)),fontsize=22),
-    plt.text(1.6,0.68,'Pearson R = {} (p = {})'.format(R,Rp),fontsize=22),plt.savefig('/home/joe/Desktop/Cells_vs_BBA.jpg',facecolor='white',dpi=150)
+    plt.legend(loc='best'),plt.grid(None),plt.text(4.1,0.7,'$r^2$ = {}'.format(np.round(r_squared,2)),fontsize=22),
+    #plt.savefig('/home/joe/Desktop/Cells_vs_BBA.jpg',facecolor='white',dpi=150)
     return    
     
 def ANOVA(DF):
@@ -75,6 +75,7 @@ m,b = best_fit(xs,ys)
 line = [(m*x)+b for x in xs]
 r_squared, R, Rp = coefficient_of_determination(ys,line)
 plots(xs,ys,line, R, Rp)
+ANOVA(DF)
 
 
 

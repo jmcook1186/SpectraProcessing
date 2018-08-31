@@ -115,42 +115,56 @@ def prepare_plot_spectra(process_spectra=True,plot_spectra = True, savefig = Fal
         LA_alb['LA_'+'{}'.format(i)] = alb_master[i]
         LA_hcrf['LA_'+'{}'.format(i)] = hcrf_master[i]    
    
+    for i in CIsites:
+        CI_alb['CI_'+'{}'.format(i)] = alb_master[i]
+        CI_hcrf['CI_'+'{}'.format(i)] = hcrf_master[i]
+    
     LA_field = LA_alb.mean(axis=1)
     HA_field = HA_alb.mean(axis=1)
+    CI_field = CI_alb.mean(axis=1)
 
     # Load SNICAR predicted spectra    
     LA_snicar = pd.read_csv('/home/joe/Desktop/snicar_predict_LA.csv',header= None)
     HA_snicar = pd.read_csv('/home/joe/Desktop/snicar_predict_HA.csv',header= None)
+    CI_snicar = pd.read_csv('/home/joe/Desktop/snicar_predict_CI.csv',header=None)
     LA_snicar = np.ravel(np.array(LA_snicar))
     HA_snicar = np.ravel(np.array(HA_snicar))
+    CI_snicar = np.ravel(np.array(CI_snicar))
+
 
     # interpolate to common wavelength range and resolution
     wavelengths = np.arange(0.305,5,0.01)
     xnew = np.arange(0.35,2.5,0.001)
     f1 = interpolate.interp1d(wavelengths,LA_snicar)
-    f2 = interpolate.interp1d(wavelengths,HA_snicar) 
+    f2 = interpolate.interp1d(wavelengths,HA_snicar)
+    f3 = interpolate.interp1d(wavelengths,CI_snicar)
     LA_snicar = f1(xnew)
     HA_snicar = f2(xnew)
+    CI_snicar = f3(xnew)
 
     if plot_spectra:
         plt.figure(figsize=(10,10))
-        plt.plot(xnew,LA_field,'r',label='Lbio field')
-        plt.plot(xnew,LA_snicar,'r--',label = 'Lbio model')
+        plt.plot(xnew,LA_field,'r',label='L$_{bio}$ field')
+        plt.plot(xnew,LA_snicar,'r--',label = 'L$_{bio}$ model')
         plt.ylim(0,1),plt.xlim(0.35,1.1),plt.xlabel('Wavelength (micron)',fontsize=22)
-        plt.ylabel('Albedo',fontsize=22),plt.legend(loc='best',fontsize=22)
+        plt.ylabel('Albedo',fontsize=22),plt.legend(loc='best',fontsize=22),plt.grid(None)
         plt.xticks(fontsize=22), plt.yticks(fontsize=22)
         
-        plt.plot(xnew,HA_field,'b',label='Hbio field')
-        plt.plot(xnew,HA_snicar,'b--',label = 'Hbio model')
+        plt.plot(xnew,HA_field,'b',label='H$_{bio}$ field')
+        plt.plot(xnew,HA_snicar,'b--',label = 'H$_{bio}$ model')
+        plt.ylim(0,1),plt.xlim(0.35,1.1),plt.legend(loc='best',fontsize = 22)
+        
+        plt.plot(xnew,CI_field,'k',label='CI field')
+        plt.plot(xnew,CI_snicar,'k--',label = 'CI model')
         plt.ylim(0,1),plt.xlim(0.35,1.1),plt.legend(loc='best',fontsize = 22)    
     
     if savefig:
         plt.savefig('field_snicar_comparison.jpg',dpi=150)
 
-    return LA_snicar, HA_snicar, LA_field, HA_field, xnew
+    return LA_snicar, HA_snicar, CI_snicar, LA_field, HA_field, CI_field, xnew
 
 
-def calculate_errors(xnew,LA_field,LA_snicar,HA_field,HA_snicar,plot_error = True):
+def calculate_errors(xnew,LA_field,LA_snicar,HA_field,HA_snicar,CI_field, CI_snicar,plot_error = True, savefig=False):
     
     LA_field = LA_field.transpose()
     LA_error_spectral = LA_snicar - LA_field
@@ -159,22 +173,30 @@ def calculate_errors(xnew,LA_field,LA_snicar,HA_field,HA_snicar,plot_error = Tru
     HA_field = HA_field.transpose()
     HA_error_spectral = HA_snicar - HA_field
     HA_error = np.sum(abs(HA_error_spectral))
+
+    CI_field = CI_field.transpose()
+    CI_error_spectral = CI_snicar - CI_field
+    CI_error = np.sum(abs(CI_error_spectral))
     
     print('Error for Hbio surface = ',HA_error)
     print('Error for Lbio surface = ',LA_error)
+    print('Error for CI surface = ', CI_error)
     
     if plot_error:
         plt.figure(figsize=(10,10))
         plt.plot(xnew,LA_error_spectral,'r'),plt.xlim(0.35,1.1),plt.ylim(-0.2,0.2)
-        plt.plot(xnew,HA_error_spectral,'b'),plt.xlim(0.35,1.1),plt.ylim(-0.2,0.2)
+        plt.plot(xnew,HA_error_spectral,'b'),plt.xlim(0.35,1.1),plt.ylim(-0.2,0.2),plt.grid(None)
+        plt.plot(xnew,CI_error_spectral,'k'),plt.xlim(0.35,1.1),plt.ylim(-0.2,0.2)
         plt.xlabel('Wavelength (microns)',fontsize=22),plt.ylabel('Absolute Error (dimensionless)',fontsize = 22)
         plt.xticks(fontsize=22),plt.yticks(fontsize=22)
+    if savefig:
+        plt.savefig('field_snicar_comparison_error.jpg',dpi=150)
         
-    return LA_error, LA_error_spectral, HA_error, HA_error_spectral
+    return LA_error, LA_error_spectral, HA_error, HA_error_spectral, CI_error, CI_error_spectral
 
 
 
 ######################## CALL FUNCTIONS ######################################
 ###############################################################################
-LA_field,HA_field,LA_snicar,HA_snicar,xnew = prepare_plot_spectra(process_spectra=True,plot_spectra = True, savefig = False)
-calculate_errors(xnew,LA_field,LA_snicar,HA_field,HA_snicar,plot_error = True)
+LA_snicar, HA_snicar, CI_snicar, LA_field, HA_field, CI_field, xnew = prepare_plot_spectra(process_spectra=True,plot_spectra = True, savefig = True)
+calculate_errors(xnew,LA_field,LA_snicar,HA_field,HA_snicar,CI_field,CI_snicar,plot_error = True, savefig = True)
