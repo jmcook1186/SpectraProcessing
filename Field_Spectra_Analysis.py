@@ -1070,17 +1070,17 @@ def absorption_feature_1030(HA_alb,HA_hcrf,LA_alb,LA_hcrf,CI_alb,CI_hcrf,SN_alb,
 
 HA_alb, HA_hcrf, LA_alb, LA_hcrf, CI_alb, CI_hcrf, SN_alb, SN_hcrf = create_plot_alb_hcrf(process_spectra = True, plots = 2, savefiles = False)
 
-alb_stat_list, alb_p_list, hcrf_stat_list, hcrf_p_list = albedo_hcrf_ANOVA(HA_alb,HA_hcrf,LA_alb,LA_hcrf,CI_alb,CI_hcrf,SN_alb,SN_hcrf,plots=True,savefiles=False)
-
-alb_hcrf_posthoc_tests(HA_alb,HA_hcrf,LA_alb,LA_hcrf,CI_alb,CI_hcrf,SN_alb,SN_hcrf,plots=True)
+#alb_stat_list, alb_p_list, hcrf_stat_list, hcrf_p_list = albedo_hcrf_ANOVA(HA_alb,HA_hcrf,LA_alb,LA_hcrf,CI_alb,CI_hcrf,SN_alb,SN_hcrf,plots=True,savefiles=False)
 #
-red_edge_test(HA_alb,HA_hcrf,LA_alb,LA_hcrf,CI_alb,CI_hcrf,SN_alb,SN_hcrf)
-#
-derivative_analysis(HA_alb,HA_hcrf,LA_alb,LA_hcrf,CI_alb,CI_hcrf,SN_alb,SN_hcrf, plots = True, savefiles = False)
-#
-calculate_ARF(HA_alb,HA_hcrf,LA_alb,LA_hcrf,CI_alb,CI_hcrf,SN_alb,SN_hcrf, plots = True, savefiles = False)
-#
-absorption_feature_1030(HA_alb,HA_hcrf,LA_alb,LA_hcrf,CI_alb,CI_hcrf,SN_alb,SN_hcrf, plots = True)
+#alb_hcrf_posthoc_tests(HA_alb,HA_hcrf,LA_alb,LA_hcrf,CI_alb,CI_hcrf,SN_alb,SN_hcrf,plots=True)
+##
+#red_edge_test(HA_alb,HA_hcrf,LA_alb,LA_hcrf,CI_alb,CI_hcrf,SN_alb,SN_hcrf)
+##
+#derivative_analysis(HA_alb,HA_hcrf,LA_alb,LA_hcrf,CI_alb,CI_hcrf,SN_alb,SN_hcrf, plots = True, savefiles = False)
+##
+#calculate_ARF(HA_alb,HA_hcrf,LA_alb,LA_hcrf,CI_alb,CI_hcrf,SN_alb,SN_hcrf, plots = True, savefiles = False)
+##
+#absorption_feature_1030(HA_alb,HA_hcrf,LA_alb,LA_hcrf,CI_alb,CI_hcrf,SN_alb,SN_hcrf, plots = True)
 #
 
 

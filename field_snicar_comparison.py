@@ -146,17 +146,17 @@ def prepare_plot_spectra(process_spectra=True,plot_spectra = True, savefig = Fal
         plt.figure(figsize=(10,10))
         plt.plot(xnew,LA_field,'r',label='L$_{bio}$ field')
         plt.plot(xnew,LA_snicar,'r--',label = 'L$_{bio}$ model')
-        plt.ylim(0,1),plt.xlim(0.35,1.1),plt.xlabel('Wavelength (micron)',fontsize=22)
+        plt.ylim(0,1),plt.xlim(0.35,1.8),plt.xlabel('Wavelength (micron)',fontsize=22)
         plt.ylabel('Albedo',fontsize=22),plt.legend(loc='best',fontsize=22),plt.grid(None)
         plt.xticks(fontsize=22), plt.yticks(fontsize=22)
         
         plt.plot(xnew,HA_field,'b',label='H$_{bio}$ field')
         plt.plot(xnew,HA_snicar,'b--',label = 'H$_{bio}$ model')
-        plt.ylim(0,1),plt.xlim(0.35,1.1),plt.legend(loc='best',fontsize = 22)
+        plt.ylim(0,1),plt.xlim(0.35,1.8),plt.legend(loc='best',fontsize = 22)
         
         plt.plot(xnew,CI_field,'k',label='CI field')
         plt.plot(xnew,CI_snicar,'k--',label = 'CI model')
-        plt.ylim(0,1),plt.xlim(0.35,1.1),plt.legend(loc='best',fontsize = 22)    
+        plt.ylim(0,1),plt.xlim(0.35,1.8),plt.legend(loc='best',fontsize = 22)    
     
     if savefig:
         plt.savefig('field_snicar_comparison.jpg',dpi=150)
@@ -195,8 +195,40 @@ def calculate_errors(xnew,LA_field,LA_snicar,HA_field,HA_snicar,CI_field, CI_sni
     return LA_error, LA_error_spectral, HA_error, HA_error_spectral, CI_error, CI_error_spectral
 
 
+## Function "weighted_average_spectrum" written to support MAR upscaling - this calculates the weighted average spectrum
+# calculated using our UAV image from Cook et al (2019) paper. The relative proportions of 
+    # each surface type are used as weights to egenrate a single spectrum to represent the entire 
+    # area. We then use the same weights to calculate impurity loadings for BioSNICAR and match
+    # the curves by tuning the ice physics. This enables us to tune SNICAR params to emerent properties
+    # over a scale more rleevant to MAR pixels (15 x 15 km). This script takes user-defined weights and
+    # calculates the weighjted average field spectrum, then compares against modelled spectrum output from 
+    # BioSNICAR saved in /home/joe/Code/ as a csv file.
 
+def weighted_average_spectrum(HA_field,LA_field,CI_field,HA_snicar,LA_snicar,CI_snicar, HA_weight, LA_weight,CI_weight,plots=True):
+    
+    alb_av = pd.DataFrame()
+    alb_av['HA'] = HA_field
+    alb_av['LA'] = LA_field
+    alb_av['CI'] = CI_field
+    alb_av['WM'] = (alb_av['HA']*HA_weight) + (alb_av['LA']*LA_weight) + (alb_av['CI']*CI_weight)
+    
+    WM_snicar = pd.read_csv('/home/joe/Code/WM_snicar.csv',header=None)
+    WM_snicar = np.ravel(WM_snicar)
+    
+    wavelengths = np.arange(0.305,5,0.01)
+    xnew = np.arange(0.35,2.5,0.001)
+    f1 = interpolate.interp1d(wavelengths,WM_snicar)
+    WM_snicar = f1(xnew)   
+    
+    if plots:
+        
+        plt.figure(figsize=(15,10)),plt.plot(xnew,alb_av['WM']),plt.plot(xnew,WM_snicar),plt.ylim(0,1),plt.xlim(0.35,2.0)
+        plt.ylabel('albedo',fontsize=22),plt.xlabel('Wavelength (microns)',fontsize=22),plt.xticks(fontisixe=22),plt.yticks(fontsize=22)
+
+    return alb_av,WM_snicar
 ######################## CALL FUNCTIONS ######################################
 ###############################################################################
-LA_snicar, HA_snicar, CI_snicar, LA_field, HA_field, CI_field, xnew = prepare_plot_spectra(process_spectra=True,plot_spectra = True, savefig = True)
-calculate_errors(xnew,LA_field,LA_snicar,HA_field,HA_snicar,CI_field,CI_snicar,plot_error = True, savefig = True)
+LA_snicar, HA_snicar, CI_snicar, LA_field, HA_field, CI_field, xnew = prepare_plot_spectra(process_spectra=True,plot_spectra = True, savefig = False)
+calculate_errors(xnew,LA_field,LA_snicar,HA_field,HA_snicar,CI_field,CI_snicar,plot_error = True, savefig = False)
+weighted_average_spectrum(HA_field,LA_field,CI_field,HA_snicar,LA_snicar,CI_snicar, 0.15, 0.63, 0.22, plots=True)
+
