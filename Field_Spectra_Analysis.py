@@ -219,16 +219,16 @@ def create_plot_alb_hcrf(process_spectra = True, plots = 2, savefiles = False):
         ax1.legend(loc='upper right',fontsize=22,facecolor='w')
         
         ax2.plot(WL,HA_hcrf_av,'g--',label='H$_{bio}$')
-        ax2.fill_between(WL,HA_hcrf_avplus,HA_hcrf_avminus,facecolor='green',alpha=0.2)
+        ax2.fill_between(WL,HA_hcrf_avplus,HA_hcrf_avminus,facecolor='green',alpha=0.1)
         
         ax2.plot(WL,LA_hcrf_av,'r--',label='L$_{bio}$')
-        ax2.fill_between(WL,LA_hcrf_avplus,LA_hcrf_avminus,facecolor='red',alpha=0.2)
+        ax2.fill_between(WL,LA_hcrf_avplus,LA_hcrf_avminus,facecolor='red',alpha=0.1)
         
         ax2.plot(WL,CI_hcrf_av,'b--',label='Clean Ice')
-        ax2.fill_between(WL,CI_hcrf_avplus,CI_hcrf_avminus,facecolor='blue',alpha=0.2)
+        ax2.fill_between(WL,CI_hcrf_avplus,CI_hcrf_avminus,facecolor='blue',alpha=0.1)
         
         ax2.plot(WL,SN_hcrf_av,'k--',label='Snow')
-        ax2.fill_between(WL,SN_hcrf_avplus,SN_hcrf_avminus,facecolor='black',alpha=0.2)
+        ax2.fill_between(WL,SN_hcrf_avplus,SN_hcrf_avminus,facecolor='black',alpha=0.1)
         
         
         ax1.set_ylim(0,1), ax1.set_xlim(350,2000),ax1.set_xlabel('Wavelength (nm)',fontsize='22'),ax1.set_ylabel('Albedo',fontsize='22')
