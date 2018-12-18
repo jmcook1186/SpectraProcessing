@@ -223,7 +223,7 @@ def weighted_average_spectrum(HA_field,LA_field,CI_field,HA_snicar,LA_snicar,CI_
     if plots:
         
         plt.figure(figsize=(15,10)),plt.plot(xnew,alb_av['WM']),plt.plot(xnew,WM_snicar),plt.ylim(0,1),plt.xlim(0.35,2.0)
-        plt.ylabel('albedo',fontsize=22),plt.xlabel('Wavelength (microns)',fontsize=22),plt.xticks(fontisixe=22),plt.yticks(fontsize=22)
+        plt.ylabel('albedo',fontsize=22),plt.xlabel('Wavelength (microns)',fontsize=22),plt.xticks(fontsize=22),plt.yticks(fontsize=22)
 
     return alb_av,WM_snicar
 ######################## CALL FUNCTIONS ######################################

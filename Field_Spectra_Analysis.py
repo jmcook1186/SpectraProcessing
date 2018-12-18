@@ -14,7 +14,7 @@ import scipy as sci
 import scipy.stats as stats
 import statsmodels as sm
 import math
-plt.style.use('seaborn')
+plt.style.use('ggplot')
 
 ################ IMPORT CSVs FOR ALBEDO AND HCRF DATA #########################
 ########## DEFINE SITES TO INCLUDE IN EACH IMPURITY LOADING CLASS #############
@@ -202,42 +202,48 @@ def create_plot_alb_hcrf(process_spectra = True, plots = 2, savefiles = False):
         ax1.tick_params(axis='both', which='major', labelsize=22)
         ax2.tick_params(axis='both', which='major', labelsize=22)
 
-        plt.text(-1600,0.95,'line = mean, ',fontsize='22')
-        plt.text(-1250,0.95, 'shade = 1 $\sigma$',fontsize='22')
+        plt.text(-1600,0.95,'dashed line = mean,',fontsize='22')
+        plt.text(-1600,0.90, 'shade = 1 $\sigma$',fontsize='22')
         
-        ax1.plot(WL,HA,color='g',label='H$_{bio}$')
+        ax1.plot(WL,HA,'g--',label='H$_{bio}$')
         ax1.fill_between(WL,HAavplus,HAavminus,facecolor='green',alpha=0.1)
         
-        ax1.plot(WL,LA,color='r',label='L$_{bio}$')
+        ax1.plot(WL,LA,'r--',label='L$_{bio}$')
         ax1.fill_between(WL,LAavplus,LAavminus,facecolor='red',alpha=0.1)
         
-        ax1.plot(WL,CI,color='b',label='CI')
+        ax1.plot(WL,CI,'b--',label='CI')
         ax1.fill_between(WL,CIavplus,CIavminus,facecolor='blue',alpha=0.1)
         
-        ax1.plot(WL,SN,color='k',label='SN')
+        ax1.plot(WL,SN,'k--',label='SN')
         ax1.fill_between(WL,SNavplus,SNavminus,facecolor='black',alpha=0.1)
-        ax1.legend(loc='upper right',fontsize=22)
+        ax1.legend(loc='upper right',fontsize=22,facecolor='w')
         
-        ax2.plot(WL,HA_hcrf_av,color='g',label='H$_{bio}$')
+        ax2.plot(WL,HA_hcrf_av,'g--',label='H$_{bio}$')
         ax2.fill_between(WL,HA_hcrf_avplus,HA_hcrf_avminus,facecolor='green',alpha=0.2)
         
-        ax2.plot(WL,LA_hcrf_av,color='r',label='L$_{bio}$')
+        ax2.plot(WL,LA_hcrf_av,'r--',label='L$_{bio}$')
         ax2.fill_between(WL,LA_hcrf_avplus,LA_hcrf_avminus,facecolor='red',alpha=0.2)
         
-        ax2.plot(WL,CI_hcrf_av,color='b',label='Clean Ice')
+        ax2.plot(WL,CI_hcrf_av,'b--',label='Clean Ice')
         ax2.fill_between(WL,CI_hcrf_avplus,CI_hcrf_avminus,facecolor='blue',alpha=0.2)
         
-        ax2.plot(WL,SN_hcrf_av,color='k',label='Snow')
+        ax2.plot(WL,SN_hcrf_av,'k--',label='Snow')
         ax2.fill_between(WL,SN_hcrf_avplus,SN_hcrf_avminus,facecolor='black',alpha=0.2)
         
         
         ax1.set_ylim(0,1), ax1.set_xlim(350,2000),ax1.set_xlabel('Wavelength (nm)',fontsize='22'),ax1.set_ylabel('Albedo',fontsize='22')
         ax2.set_ylim(0,1), ax2.set_xlim(350,2000),ax2.set_xlabel('Wavelength (nm)',fontsize='22'),ax2.set_ylabel('HCRF',fontsize='22')
-        ax2.legend(loc='upper right',fontsize='22')
+        ax2.legend(loc='upper right',fontsize='22', facecolor='w')
         ax1.grid(None),ax2.grid(None)
+
+        ax1.set_facecolor('w'), ax2.set_facecolor('w')
+
         plt.savefig('/home/joe/Desktop/Albedo_HCRF.jpg',dpi=150)
+
+        plt.show()
     
     if savefiles:
+
         HA_alb.to_csv('Hbio_albedo.csv')
         LA_alb.to_csv('Lbio_albedo.csv')
         CI_alb.to_csv('CI_albedo.csv')
