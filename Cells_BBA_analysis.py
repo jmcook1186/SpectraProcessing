@@ -6,9 +6,11 @@ Created on Thu May 24 22:21:07 2018
 @author: joe
 """
 
-from numpy import * 
+import numpy as np
 from scipy.stats.stats import pearsonr
 import scipy.stats as stats
+import pandas as pd
+import matplotlib.pyplot as plt
 import statsmodels as sm
 
 # Import BBA and cell count dataset from csv
@@ -19,8 +21,8 @@ ys = np.array(DF['BBA'])
 # Define functions for regression, correlation and analysis of variance
 
 def best_fit(xs,ys):
-    m = (((mean(xs)*mean(ys)) - mean(xs*ys)) / ((mean(xs)*mean(xs)) - mean(xs*xs)))     
-    b = mean(ys) - m*mean(xs)
+    m = (((np.mean(xs)*np.mean(ys)) - np.mean(xs*ys)) / ((np.mean(xs)*np.mean(xs)) - np.mean(xs*xs)))
+    b = np.mean(ys) - m*np.mean(xs)
     print('regression line equation = {}x + {}'.format(np.round(m,3),np.round(b,3)))        
     return m, b
 
@@ -28,7 +30,7 @@ def squared_error(ys_orig,ys_line):
     return sum((ys_line - ys) * (ys_line - ys))
 
 def coefficient_of_determination(ys,ys_line):
-    y_mean_line = [mean(ys) for y in ys]
+    y_mean_line = [np.mean(ys) for y in ys]
     squared_error_regr = squared_error(ys, ys_line)
     squared_error_y_mean = squared_error(ys, y_mean_line)
     r_squared = 1 - (squared_error_regr/squared_error_y_mean)
@@ -56,16 +58,16 @@ def ANOVA(DF):
     CI_cells = DF.loc[DF['Class'] == 'CI']
     CI_cells = np.array(CI_cells['Cells_mL'])
     
-    SN_cells = DF.loc[DF['Class'] == 'SN']
-    SN_cells = np.array(SN_cells['Cells_mL'])
+    # SN_cells = DF.loc[DF['Class'] == 'SN']
+    # SN_cells = np.array(SN_cells['Cells_mL'])
     
-    F_stat, p = stats.mstats.f_oneway(HA_cells,LA_cells,CI_cells,SN_cells)
+    F_stat, p = stats.mstats.f_oneway(HA_cells,LA_cells,CI_cells)#,SN_cells)
     
     print('ANOVA F-stat = {} , ANOVA p = {}'.format(F_stat,p))    
     print('HA Summary: Max = {}, Min = {}, mean = {}, Std = {}'.format(np.max(HA_cells),np.min(HA_cells),np.mean(HA_cells),np.std(HA_cells)))
     print('LA Summary: Max = {}, Min = {}, mean = {}, Std = {}'.format(np.max(LA_cells),np.min(LA_cells),np.mean(LA_cells),np.std(LA_cells)))
     print('CI Summary: Max = {}, Min = {}, mean = {}, Std = {}'.format(np.max(CI_cells),np.min(CI_cells),np.mean(CI_cells),np.std(CI_cells)))
-    print('SN Summary: Max = {}, Min = {}, mean = {}, Std = {}'.format(np.max(SN_cells),np.min(SN_cells),np.mean(SN_cells),np.std(SN_cells)))
+#    print('SN Summary: Max = {}, Min = {}, mean = {}, Std = {}'.format(np.max(SN_cells),np.min(SN_cells),np.mean(SN_cells),np.std(SN_cells)))
     
     return F_stat, p
 

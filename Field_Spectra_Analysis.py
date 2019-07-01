@@ -847,16 +847,16 @@ def calculate_ARF(HA_alb,HA_hcrf,LA_alb,LA_hcrf,CI_alb,CI_hcrf,SN_alb,SN_hcrf, p
     
     for i in HAsites:
         p = 'HA_{}'.format(i)
-        HA_ARF[p] = HA_hcrf[p] / HA_alb[p]
+        HA_ARF[p] = HA_alb[p] / HA_hcrf[p]
     for i in LAsites:
         p = 'LA_{}'.format(i)
-        LA_ARF[p] = LA_hcrf[p] / LA_alb[p]
+        LA_ARF[p] = LA_alb[p] / LA_hcrf[p]
     for i in CIsites:
         p = 'CI_{}'.format(i)
-        CI_ARF[p] = CI_hcrf[p] / CI_alb[p]
+        CI_ARF[p] = CI_alb[p] / CI_hcrf[p]
     for i in SNsites:
         p = 'SN_{}'.format(i)
-        SN_ARF[p] = SN_hcrf[p] / SN_alb[p]        
+        SN_ARF[p] = SN_alb[p] / SN_hcrf[p]
 
     meanARF_HA = HA_ARF.mean(axis=1)
     meanARF_LA = LA_ARF.mean(axis=1)
@@ -866,7 +866,7 @@ def calculate_ARF(HA_alb,HA_hcrf,LA_alb,LA_hcrf,CI_alb,CI_hcrf,SN_alb,SN_hcrf, p
     if plots:
         plt.figure(figsize = (10,10))
         plt.plot(WL,meanARF_HA,label='HA'),plt.plot(WL,meanARF_LA,label='LA'),plt.plot(WL,meanARF_CI,label='CI'),plt.plot(WL,meanARF_SN,label='SN'),
-        plt.ylim(0,1.2),plt.xlim(300,2200),plt.ylabel('Anisotropic Reflectance Factor'), 
+        plt.ylim(0,2),plt.xlim(300,1350),plt.ylabel('Anisotropic Reflectance Factor'),
         plt.xlabel('Wavelength (nm)'), plt.legend(loc='best')
 
     if savefiles:
@@ -1074,20 +1074,20 @@ def absorption_feature_1030(HA_alb,HA_hcrf,LA_alb,LA_hcrf,CI_alb,CI_hcrf,SN_alb,
 
 
 
-HA_alb, HA_hcrf, LA_alb, LA_hcrf, CI_alb, CI_hcrf, SN_alb, SN_hcrf = create_plot_alb_hcrf(process_spectra = True, plots = 2, savefiles = False)
+HA_alb, HA_hcrf, LA_alb, LA_hcrf, CI_alb, CI_hcrf, SN_alb, SN_hcrf = create_plot_alb_hcrf(process_spectra = True, plots = 2, savefiles = True)
 
 #alb_stat_list, alb_p_list, hcrf_stat_list, hcrf_p_list = albedo_hcrf_ANOVA(HA_alb,HA_hcrf,LA_alb,LA_hcrf,CI_alb,CI_hcrf,SN_alb,SN_hcrf,plots=True,savefiles=False)
-#
+
 #alb_hcrf_posthoc_tests(HA_alb,HA_hcrf,LA_alb,LA_hcrf,CI_alb,CI_hcrf,SN_alb,SN_hcrf,plots=True)
-##
+
 #red_edge_test(HA_alb,HA_hcrf,LA_alb,LA_hcrf,CI_alb,CI_hcrf,SN_alb,SN_hcrf)
-##
+
 #derivative_analysis(HA_alb,HA_hcrf,LA_alb,LA_hcrf,CI_alb,CI_hcrf,SN_alb,SN_hcrf, plots = True, savefiles = False)
-##
-#calculate_ARF(HA_alb,HA_hcrf,LA_alb,LA_hcrf,CI_alb,CI_hcrf,SN_alb,SN_hcrf, plots = True, savefiles = False)
-##
+
+calculate_ARF(HA_alb,HA_hcrf,LA_alb,LA_hcrf,CI_alb,CI_hcrf,SN_alb,SN_hcrf, plots = True, savefiles = False)
+
 #absorption_feature_1030(HA_alb,HA_hcrf,LA_alb,LA_hcrf,CI_alb,CI_hcrf,SN_alb,SN_hcrf, plots = True)
-#
+
 
 
 

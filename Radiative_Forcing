@@ -20,7 +20,7 @@ import math
 
 WL = np.arange(350,2500,1)
 
-alb_master = pd.read_csv('Albedo_master.csv')
+alb_master = pd.read_csv('/home/joe/Code/Albedo_master.csv')
 
 HAsites = ['13_7_SB2','13_7_SB4',
 '14_7_S5','14_7_SB1','14_7_SB4','14_7_SB5','14_7_SB10',
@@ -76,18 +76,27 @@ PsynthEfficiency = 0.05 # Efficiency of photosynthesis in ice algae, assumed 5%
 for i in HAsites:
     HA_alb[i] = alb_master[i]
     HA_mean = HA_alb.mean(axis=1)
+    HA_max = HA_alb.max(axis=1)
+    HA_min = HA_alb.min(axis=1)
+    HA_std = HA_alb.std(axis=1)
 
 for ii in LAsites:
     LA_alb[ii] = alb_master[ii]
     LA_mean = LA_alb.mean(axis=1)
+    LA_max = LA_alb.max(axis=1)
+    LA_min = LA_alb.min(axis=1)
 
 for iii in Snowsites:
     Snow_alb[iii] = alb_master[iii]
     Snow_mean=Snow_alb.mean(axis=1)
+    Snow_max = Snow_alb.max(axis=1)
+    Snow_min = Snow_alb.min(axis=1)
         
 for iv in CIsites:
     CI_alb[iv] = alb_master[iv]     
     CI_mean=CI_alb.mean(axis=1)
+    CI_max = CI_alb.max(axis=1)
+    CI_min = CI_alb.min(axis=1)
 
 #optional plotting of mean albedo spectra   
 plt.figure(1)
@@ -119,13 +128,15 @@ def irradiance():
     hours = ['03','04','05','06','07','08','09','10','11','12','13',
              '14','15','16','17','18','19','20','21'] # clock hours of modelled irradiance
     for i in hours:
-        incomingDF[i] = pd.read_csv(path+file+i+'.csv') # loop hours and add each spectrum to dataframe
+        p = pd.read_csv(str(path + file + i + '.csv'))
+        p2 = np.squeeze(np.array(p))
+        incomingDF[i] = p2 # loop hours and add each spectrum to dataframe
     
     for i in hours:
         temp = np.array(incomingDF[i][0:215]) # limit to waveband of interest
         temp = temp.ravel() # ravel to standardise shape of DF (=1D)
         x = np.arange(temp.size) # x values for interpolation
-        y = temp # y values for interplation
+        y = temp # y values for interpolation
         new_length = 2150 # number of values in newly interpolated dataset
         new_x = np.linspace(x.min(), x.max(), new_length) # function fitting
         new_y = sci.interpolate.interp1d(x, y, kind='cubic')(new_x) # interpolation
@@ -147,8 +158,8 @@ def irradiance():
 
 def IRF(CI_mean,HA_mean,LA_mean,incoming):
     
-    HA_RF_temp = CI_mean-HA_mean # diffeence between clean ice and algal ice albedo
-    LA_RF_temp = CI_mean-LA_mean
+    HA_RF_temp = (CI_mean-HA_mean) # diffeence between clean ice and algal ice albedo
+    LA_RF_temp = (CI_mean-LA_mean)
     
 
     HA_RF = [(a*b)*(1-PsynthEfficiency) for a,b in zip(HA_RF_temp,incoming)] # mutiply by incoming irradiance and account for 

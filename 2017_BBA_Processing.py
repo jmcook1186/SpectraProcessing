@@ -28,7 +28,7 @@ import matplotlib.pyplot as plt
 import os
 import numbers
 
-master = pd.read_csv('/media/joe/C38C-3252/BlackandBloom/Field_Data/JC2017/Albedo/BBA.txt')
+master = pd.read_csv('/media/joe/TOSHIBA/BlackandBloom/Field_Data/2018/asd/2018_MASTER_ALB.csv')
 
 def create_dataset(master):
     # cycle through txt file, strip out site name and mean all columns where
@@ -54,7 +54,7 @@ def create_dataset(master):
     BBA = DF2[:-1]
 
     
-    DF.to_csv('/media/joe/C38C-3252/2017_BBAs.csv') # save as csv
+    DF.to_csv('/media/joe/TOSHIBA/BlackandBloom/Field_Data/2018/asd/BBA.csv') # save as csv
     
     return BBA
 
